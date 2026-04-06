@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代文学长论文下单系统</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+body {
+    background: #0c0c0c;
+    padding: 30px 16px;
+}
+
+.card {
+    max-width: 520px;
+    margin: 0 auto;
+    background: linear-gradient(145deg, #1a1a1a, #141414);
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    padding: 40px 32px;
+    border: 1px solid #333;
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #d4af37, #ffd700, #b8860b);
+}
+
+.title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+.form-item {
+    margin-bottom: 24px;
+}
+
+.form-item label {
+    display: block;
+    font-size: 15px;
+    color: #e0e0e0;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-item input,
+.form-item textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #eee;
+    background: #1f1f1f;
+    transition: all 0.3s ease;
+}
+
+.form-item input:focus,
+.form-item textarea:focus {
+    outline: none;
+    border-color: #d4af37;
+    background: #242424;
+}
+
+.form-item textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.rule-box {
+    background: #1a1a1a;
+    border-left: 3px solid #d4af37;
+    padding: 18px 20px;
+    border-radius: 12px;
+    margin: 30px 0;
+    font-size: 14px;
+    color: #bbb;
+    line-height: 1.7;
+}
+
+.rule-box strong {
+    color: #fff;
+}
+
+.rule-box .red {
+    color: #ff4757;
+    font-weight: 600;
+}
+
+.btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+button {
+    flex: 1;
+    height: 50px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-submit {
+    background: linear-gradient(90deg, #d4af37, #ffd700);
+    color: #111;
+    font-weight: 600;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-clear {
+    background: #2a2a2a;
+    color: #ccc;
+}
+
+.btn-clear:hover {
+    background: #333;
+}
+
+.btn-copy {
+    width: 100%;
+    background: linear-gradient(90deg, #b8860b, #d4af37);
+    color: #111;
+    font-weight: 600;
+    margin-top: 16px;
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.btn-copy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+}
+
+.result-box {
+    margin-top: 24px;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #e0e0e0;
+    white-space: pre-line;
+    display: none;
+    user-select: all;
+    border: 1px solid #333;
+}
+
+.tip {
+    text-align: center;
+    font-size: 13px;
+    color: #777;
+    margin-top: 16px;
+}
+
+.toast {
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    backdrop-filter: blur(8px);
+}
+.toast.show {
+    opacity: 1;
+    top: 60px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="card">
+    <div class="title">代文学长论文下单系统</div>
+    <div class="subtitle">专业高效｜安全保密｜售后无忧</div>
+
+    <div class="form-item">
+        <label>论文题目</label>
+        <input type="text" id="title" placeholder="请输入论文题目">
+    </div>
+
+    <div class="form-item">
+        <label>专业</label>
+        <input type="text" id="major" placeholder="请输入专业">
+    </div>
+
+    <div class="form-item">
+        <label>学历</label>
+        <input type="text" id="edu" placeholder="本科 / 硕士 / 专科">
+    </div>
+
+    <div class="form-item">
+        <label>论文字数</label>
+        <input type="text" id="words" placeholder="如：8000字">
+    </div>
+
+    <div class="form-item">
+        <label>查重率要求</label>
+        <input type="text" id="check" placeholder="如：15%以内">
+    </div>
+
+    <div class="form-item">
+        <label>交稿日期</label>
+        <input type="text" id="date" placeholder="如：2026年4月20日">
+    </div>
+
+    <div class="form-item">
+        <label>下单内容</label>
+        <textarea id="content">开题报告➕任务书➕论文➕降重（包含答辩指南和答辩ppt模板）</textarea>
+    </div>
+
+    <div class="rule-box">
+        <strong>⚠ 专业工作室承诺</strong><br>
+        查重：完成稿件后赠送降重服务，规定平台查重高1%都会继续降重直至合格。<br>
+        注意：修改不可变方向、不可改大纲、不可换题目。<br>
+        <span class="red">⚠⚠ 重点提醒：催促开题/任务书提前1天，论文催促提前3天告知。</span>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-submit" onclick="build()">确认生成</button>
+        <button class="btn-clear" onclick="clearAll()">清空表单</button>
+    </div>
+
+    <button class="btn-copy" id="copyBtn" onclick="doCopy()">一键复制下单信息</button>
+
+    <div class="result-box" id="result"></div>
+    <div class="tip">复制后直接粘贴发给客服即可</div>
+</div>
+
+<script>
+function showToast(msg) {
+    let t = document.getElementById("toast");
+    t.innerText = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 1600);
+}
+
+function build() {
+    let t = document.getElementById("title").value.trim();
+    let m = document.getElementById("major").value.trim();
+    let e = document.getElementById("edu").value.trim();
+    let w = document.getElementById("words").value.trim();
+    let c = document.getElementById("check").value.trim();
+    let d = document.getElementById("date").value.trim();
+    let n = document.getElementById("content").value.trim();
+
+    let str = `以下是下单要求—————————————
+论文题目：${t}
+专业：${m}
+学历: ${e}
+论文字数: ${w}
+查重率：${c}
+交稿日期：${d}
+下单内容: ${n}
+—————————————————————————
+⚠ 专业工作室承诺
+查重：完成稿件后赠送降重服务，规定平台查重高1%都会继续降重直至合格。
+注意：修改不可变方向、不可改大纲、不可换题目。
+⚠⚠ 重点提醒：催促开题/任务书提前1天，论文催促提前3天告知。`;
+
+    document.getElementById("result").innerText = str;
+    document.getElementById("result").style.display = "block";
+    document.getElementById("copyBtn").style.display = "block";
+    showToast("✅ 下单信息已生成");
+}
+
+function clearAll() {
+    document.getElementById("title").value = "";
+    document.getElementById("major").value = "";
+    document.getElementById("edu").value = "";
+    document.getElementById("words").value = "";
+    document.getElementById("check").value = "";
+    document.getElementById("date").value = "";
+    document.getElementById("content").value = "开题报告➕任务书➕论文➕降重（包含答辩指南和答辩ppt模板）";
+    document.getElementById("result").innerText = "";
+    document.getElementById("result").style.display = "none";
+    document.getElementById("copyBtn").style.display = "none";
+    showToast("🧹 表单已清空");
+}
+
+function doCopy() {
+    let text = document.getElementById("result").innerText;
+    let input = document.createElement("textarea");
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand("copy");
+    document.body.removeChild(input);
+    showToast("✅ 复制成功，直接粘贴发给客服");
+}
+</script>
+
+</body>
+</html>
